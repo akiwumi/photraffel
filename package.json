@@ -1,0 +1,14 @@
+{
+  "name": "landing-form-app",
+  "version": "1.0.0",
+  "description": "Simple landing page with form, SQLite storage, and admin panel with auth",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.0",
+    "sqlite3": "^5.1.7",
+    "express-session": "^1.17.3"
+  }
+}

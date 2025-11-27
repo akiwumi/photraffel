@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Landing Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page page--center">
+    <div class="wrapper wrapper--wide">
+      <p class="hero-eyebrow">mailing list</p>
+      <h1>Picture Raffle</h1>
+      <p class="hero-subtitle">
+        Fill in your details for the raffel. The draw will be made on the 12th of December, and the winner will be notified by email.
+      </p>
+
+      <div class="form-layout">
+        <figure class="form-visual">
+          <img src="clown-2.jpg" alt="Festival attendee with face paint and oversized glasses" />
+        </figure>
+
+        <form id="signup-form">
+          <div>
+            <label for="firstName">First name</label>
+            <input type="text" id="firstName" name="firstName" required />
+          </div>
+
+          <div>
+            <label for="lastName">Last name</label>
+            <input type="text" id="lastName" name="lastName" required />
+          </div>
+
+          <div>
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+
+          <div class="radio-group">
+            <div class="radio-group-title">Newsletter</div>
+            <label class="radio-row">
+              <input type="radio" name="newsletter" value="in" checked />
+              Opt in to the newsletter
+            </label>
+            <label class="radio-row">
+              <input type="radio" name="newsletter" value="out" />
+              I do not want the newsletter
+            </label>
+          </div>
+
+          <button type="submit">Submit</button>
+        </form>
+
+      </div>
+
+      <div id="form-message" class="message" aria-live="polite"></div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>

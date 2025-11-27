@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page page--center">
+    <div class="wrapper">
+      <h1>Admin login</h1>
+      <p>Sign in to access submissions.</p>
+
+      <form action="/login" method="POST">
+        <div>
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            autocomplete="username"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        <button type="submit">Login</button>
+      </form>
+
+      <p class="hint">
+        <a href="/forgot-password">Forgot your password?</a>
+      </p>
+      <p class="hint">
+        Back to site? <a href="/">Go to landing page</a>
+      </p>
+    </div>
+  </body>
+</html>
