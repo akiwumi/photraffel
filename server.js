@@ -128,6 +128,11 @@ app.post("/forgot-password", (req, res) => {
 });
 
 // --- ROUTES: API & PAGES ---
+// Serve landing page
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 // Handle form submission from landing page
 app.post("/api/submit", (req, res) => {
   const { firstName, lastName, email, newsletter } = req.body;
