@@ -15,6 +15,17 @@ let adminPassword = process.env.ADMIN_PASS || "password123";
 const RESET_CODE = process.env.ADMIN_RESET_CODE || "resetme123"; // change this!
 
 // --- MIDDLEWARE ---
+// CORS support for deployed environments
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -29,8 +40,6 @@ app.use(
     },
   })
 );
-
-app.use(express.static(path.join(__dirname, "public")));
 
 // --- DATABASE SETUP ---
 const db = new sqlite3.Database("./subscribers.db");
@@ -47,6 +56,48 @@ db.serialize(() => {
     )
   `);
 });
+
+// --- API ROUTES (must be before static middleware) ---
+// Handle form submission from landing page
+app.post("/api/submit", (req, res) => {
+  try {
+    const { firstName, lastName, email, newsletter } = req.body;
+
+    console.log("Form submission received:", { firstName, lastName, email, newsletter });
+
+    if (!firstName || !lastName || !email || !newsletter) {
+      return res.status(400).json({ message: "Please fill in all fields." });
+    }
+
+    const optIn = newsletter === "in" ? 1 : 0;
+
+    const stmt = db.prepare(
+      "INSERT INTO subscribers (first_name, last_name, email, newsletter_opt_in) VALUES (?, ?, ?, ?)"
+    );
+
+    stmt.run(firstName, lastName, email, optIn, function (err) {
+      if (err) {
+        console.error("DB error:", err.message);
+        if (err.message.includes("UNIQUE constraint failed")) {
+          return res
+            .status(409)
+            .json({ message: "This email has already been submitted." });
+        }
+        return res.status(500).json({ message: "Database error." });
+      }
+
+      console.log("Form submission successful for:", email);
+      return res.json({ message: "Thank you and good luck." });
+    });
+
+    stmt.finalize();
+  } catch (error) {
+    console.error("Error processing form submission:", error);
+    return res.status(500).json({ message: "Server error. Please try again." });
+  }
+});
+
+app.use(express.static(path.join(__dirname, "public")));
 
 // --- AUTH MIDDLEWARE ---
 function requireAuth(req, res, next) {
@@ -127,41 +178,10 @@ app.post("/forgot-password", (req, res) => {
   );
 });
 
-// --- ROUTES: API & PAGES ---
+// --- ROUTES: PAGES ---
 // Serve landing page
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-// Handle form submission from landing page
-app.post("/api/submit", (req, res) => {
-  const { firstName, lastName, email, newsletter } = req.body;
-
-  if (!firstName || !lastName || !email || !newsletter) {
-    return res.status(400).json({ message: "Please fill in all fields." });
-  }
-
-  const optIn = newsletter === "in" ? 1 : 0;
-
-  const stmt = db.prepare(
-    "INSERT INTO subscribers (first_name, last_name, email, newsletter_opt_in) VALUES (?, ?, ?, ?)"
-  );
-
-  stmt.run(firstName, lastName, email, optIn, function (err) {
-    if (err) {
-      console.error("DB error:", err.message);
-      if (err.message.includes("UNIQUE constraint failed")) {
-        return res
-          .status(409)
-          .json({ message: "This email has already been submitted." });
-      }
-      return res.status(500).json({ message: "Database error." });
-    }
-
-    return res.json({ message: "Thank you and good luck." });
-  });
-
-  stmt.finalize();
 });
 
 // Admin-only: list submissions
